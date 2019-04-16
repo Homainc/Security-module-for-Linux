@@ -1,0 +1,10 @@
+config SECURITY_WHITELIST
+	bool "Whitelist Security Module"
+	depends on SECURITY
+	depends on NET
+	select SECURITYFS
+	select SRCU
+	select BUILD_BIN2C
+	default n
+	help
+        TODO
