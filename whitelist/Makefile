@@ -1,1 +1,1 @@
-obj-y += whitelist.o
+obj-y += whitelist_lsm.o
