@@ -74,23 +74,6 @@ int main(int argc, char **argv)
             {0, 0, 0, 0}
         };
 
-            default:
-    if (list_flag)
-    {
-        if (optind < argc)
-        {
-            while (optind < argc)
-                list_whitelist(argv[optind++]);
-        }
-        else
-        {
-            list_whitelist(".");
-        }
-    }
-
-    exit(0);
-}
-
         int option_index = 0;
 
         c = getopt_long(argc, argv, "", long_options, &option_index);
@@ -109,6 +92,25 @@ int main(int argc, char **argv)
             break;
 
         default:
+            abort();
+        }
+    }
+
+    if ((add_flag == 0) && (del_flag == 0) && (list_flag == 0))
+        list_flag = 1;
+
+    if (add_flag)
+    {
+        while (optind < argc)
+            add_whitelist(argv[optind++]) ;
+    }
+
+    if (del_flag)
+    {
+        while (optind < argc)
+            del_whitelist(argv[optind++]) ;
+    }
+
     if (list_flag)
     {
         if (optind < argc)
