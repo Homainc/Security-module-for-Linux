@@ -1,3 +1,20 @@
+/*
+ * Simple script to setup whitelisting attributes on files:
+ *
+ *   whitelist --add /bin/bash /bin/sh /usr/bin/id /usr/bin/uptime [..]
+ *
+ *   whitelist --del /bin/bash /bin/sh [..]
+ *
+ *   whitelist --list [/sbin /usr/sbin]
+ *
+ * With no arguments it displays whitelisted binaries beneath the current directory,
+ * recursively.  If you prefer you can list the directories to search explicitly.
+ *
+ * Philipp Hamitsevich
+ * --
+ */
+
+/* We want POSIX.1-2008 + XSI, i.e. SuSv4, features */
 #define _XOPEN_SOURCE 700
 
 
@@ -17,6 +34,10 @@ static int add_flag = 0;
 static int del_flag = 0;
 static int list_flag = 0;
 
+
+/*
+ * Add the whitelist attribute to the given path.
+ */
 void add_whitelist(const char *path)
 {
     char value[2] = "1";
@@ -25,6 +46,9 @@ void add_whitelist(const char *path)
         perror("setxattr");
 }
 
+/*
+ * Remove the whitelist attribute from the given path.
+ */
 void del_whitelist(const char *path)
 {
     if (removexattr(path, "security.whitelisted") != 0)
@@ -35,6 +59,9 @@ int print_entry(const char *filepath, const struct stat *info,
                 const int typeflag, struct FTW *pathinfo)
 {
 
+    /*
+     * We only care about files.
+     */
     if (typeflag == FTW_F)
     {
         int length = getxattr(filepath, "security.whitelisted", NULL, 0);
@@ -45,6 +72,10 @@ int print_entry(const char *filepath, const struct stat *info,
 
     return 0;
 }
+/*
+ * Look at all the files in the given directory, show those that are
+ * whitelisted.
+ */
 void list_whitelist(const char *directory)
 {
 
@@ -60,12 +91,18 @@ void list_whitelist(const char *directory)
 }
 
 
+/*
+ * Entry-Point.
+ */
 int main(int argc, char **argv)
 {
     int c;
 
     while (1)
     {
+        /*
+         * Parse our command-line options.
+         */
         static struct option long_options[] =
         {
             {"add",  no_argument, &add_flag, 1},
@@ -85,10 +122,12 @@ int main(int argc, char **argv)
         {
         case 0:
 
+            /* If this option set a flag, do nothing else now. */
             if (long_options[option_index].flag != 0)
                 break;
 
         case '?':
+            /* getopt_long already printed an error message. */
             break;
 
         default:
@@ -96,23 +135,28 @@ int main(int argc, char **argv)
         }
     }
 
+    /* No action? Then list. */
     if ((add_flag == 0) && (del_flag == 0) && (list_flag == 0))
         list_flag = 1;
 
+    /* Adding whitelist to some files? */
     if (add_flag)
     {
         while (optind < argc)
             add_whitelist(argv[optind++]) ;
     }
 
+    /* Removing whitelist from some files? */
     if (del_flag)
     {
         while (optind < argc)
             del_whitelist(argv[optind++]) ;
     }
 
+    /* Listing files */
     if (list_flag)
     {
+        /* If we have arguments assume they're directories to list. */
         if (optind < argc)
         {
             while (optind < argc)
@@ -124,5 +168,6 @@ int main(int argc, char **argv)
         }
     }
 
+    /* All done */
     exit(0);
 }
