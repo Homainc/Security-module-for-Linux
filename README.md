@@ -21,11 +21,10 @@ For deny you should run:
 sudo util --del <filename>
 ```
 If you want to see files with `security.whitelisted` attribute in the current catalog you should run:
+```
 util --list
 #or just
 util
-```
-
 ```
 ## Installing
 TODO
