@@ -31,7 +31,10 @@ The code has been tested upon kernels as recent as 4.15.48
 
 Copy the contents of `security/` and `include/` into your local Kernel-tree, and run `make menuconfig` to enable the appropriate options.
 
-NOTE: Over time the two files security/Kconfig & security/Makefile might need resyncing with the base versions installed with the Linux source-tree, you can look for mentions of CAN_EXEC, HASH_CHECK, & WHITELIST to see what I've done to add the modules.
+If you want to build Kernel on Ubuntu you can follow this guide:
+https://wiki.ubuntu.com/Kernel/BuildYourOwnKernel
+
+NOTE: Over time the two files security/Kconfig & security/Makefile might need resyncing with the base versions installed with the Linux source-tree, you can look for mentions of WHITELIST to see what I've done to add the modules.
 
 For a Debian GNU/Linux host, building a recent kernel, these are the dependencies you'll need to install:
 ```
