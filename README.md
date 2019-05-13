@@ -5,11 +5,11 @@ Also in the catalog `/security/whitelist/util` to be util which provides simple 
 ## Using 
 For grant access to execute binary file by non-root users you should run in the terminal next command:
 ```
-sudo setfattr -n security.whitelisted -v 1 [filename]
+sudo setfattr -n security.whitelisted -v 1 <filename>
 ```
 For deny you should run:
 ```
-sudo setfattr -x security.whitelisted [filename]
+sudo setfattr -x security.whitelisted <filename>
 ```
 ## Using /security/whitelist/util
 For grant access to execute binary file by non-root users you should run in the terminal next command:
@@ -26,5 +26,16 @@ util --list
 #or just
 util
 ```
-## Installing
-TODO
+## Installation
+The code has been tested upon kernels as recent as 4.15.48
+
+Copy the contents of `security/` and `include/` into your local Kernel-tree, and run `make menuconfig` to enable the appropriate options.
+
+NOTE: Over time the two files security/Kconfig & security/Makefile might need resyncing with the base versions installed with the Linux source-tree, you can look for mentions of CAN_EXEC, HASH_CHECK, & WHITELIST to see what I've done to add the modules.
+
+For a Debian GNU/Linux host, building a recent kernel, these are the dependencies you'll need to install:
+```
+apt-get install flex bison bc libelf-dev libssl-dev \
+    build-essential make libncurses5-dev \
+    git-core
+```
